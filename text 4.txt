@@ -1,0 +1,35 @@
+const socket = io();
+
+// Elements
+const loginForm = document.getElementById('login-form');
+const chatSection = document.getElementById('chat-section');
+const messagesDiv = document.getElementById('messages');
+const chatInput = document.getElementById('chat-input');
+const sendButton = document.getElementById('send-button');
+
+// Handle login
+loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const username = document.getElementById('username').value;
+    if (username.trim()) {
+        loginForm.style.display = 'none';
+        chatSection.style.display = 'block';
+        socket.emit('chat message', `${username} has joined the chat`);
+    }
+});
+
+// Send messages
+sendButton.addEventListener('click', () => {
+    const message = chatInput.value;
+    if (message.trim()) {
+        socket.emit('chat message', message);
+        chatInput.value = '';
+    }
+});
+
+// Display messages
+socket.on('chat message', (msg) => {
+    const messageElement = document.createElement('div');
+    messageElement.textContent = msg;
+    messagesDiv.appendChild(messageElement);
+});

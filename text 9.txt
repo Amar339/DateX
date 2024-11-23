@@ -1,0 +1,12 @@
+/* Mobile styles */
+@media (max-width: 600px) {
+    body {
+        font-size: 14px;
+    }
+    #messages {
+        height: 200px;
+    }
+    #chat-input {
+        width: 70%;
+    }
+}

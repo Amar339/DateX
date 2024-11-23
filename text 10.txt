@@ -1,0 +1,22 @@
+const peers = {};
+
+io.on('connection', (socket) => {
+    console.log('A user connected: ' + socket.id);
+
+    socket.on('join-room', (roomId) => {
+        if (!peers[roomId]) peers[roomId] = [];
+        peers[roomId].push(socket.id);
+
+        socket.join(roomId);
+        socket.broadcast.to(roomId).emit('user-connected', socket.id);
+
+        socket.on('disconnect', () => {
+            peers[roomId] = peers[roomId].filter((id) => id !== socket.id);
+            socket.broadcast.to(roomId).emit('user-disconnected', socket.id);
+        });
+    });
+
+    socket.on('send-signal', ({ to, signal }) => {
+        io.to(to).emit('receive-signal', { from: socket.id, signal });
+    });
+});

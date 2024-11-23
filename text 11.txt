@@ -1,0 +1,40 @@
+const peerConnections = {};
+const localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+
+// Join a room
+socket.emit('join-room', 'chat-room-1');
+
+// Handle new user connection
+socket.on('user-connected', async (userId) => {
+    const peer = new RTCPeerConnection();
+    peerConnections[userId] = peer;
+
+    // Add local stream tracks
+    localStream.getTracks().forEach((track) => peer.addTrack(track, localStream));
+
+    const offer = await peer.createOffer();
+    await peer.setLocalDescription(offer);
+
+    socket.emit('send-signal', { to: userId, signal: offer });
+});
+
+// Handle incoming signal
+socket.on('receive-signal', async ({ from, signal }) => {
+    if (!peerConnections[from]) {
+        const peer = new RTCPeerConnection();
+        peerConnections[from] = peer;
+
+        localStream.getTracks().forEach((track) => peer.addTrack(track, localStream));
+
+        peer.ontrack = (event) => {
+            const remoteStream = new MediaStream(event.streams[0].getTracks());
+            document.getElementById('remote-video').srcObject = remoteStream;
+        };
+
+        await peer.setRemoteDescription(new RTCSessionDescription(signal));
+        const answer = await peer.createAnswer();
+        await peer.setLocalDescription(answer);
+
+        socket.emit('send-signal', { to: from, signal: answer });
+    }
+});

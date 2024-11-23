@@ -1,0 +1,2 @@
+<video id="local-video" autoplay muted></video>
+<video id="remote-video" autoplay></video>

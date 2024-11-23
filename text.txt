@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Chat & Dating</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Welcome to ChatLink</h1>
+        <p>Join as a Guest or Log in</p>
+    </header>
+
+    <main>
+        <section id="login-section">
+            <h2>Login or Chat as Guest</h2>
+            <form id="login-form">
+                <input type="text" id="username" placeholder="Enter your username" required>
+                <button type="submit">Join Chat</button>
+            </form>
+        </section>
+
+        <section id="chat-section" style="display: none;">
+            <h2>Chat Room</h2>
+            <div id="messages"></div>
+            <input type="text" id="chat-input" placeholder="Type a message">
+            <button id="send-button">Send</button>
+        </section>
+    </main>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

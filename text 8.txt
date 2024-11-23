@@ -1,0 +1,8 @@
+app.post('/match', authMiddleware, async (req, res) => {
+    const { preferences } = req.user;
+    const matches = await User.find({
+        preferences: { $in: preferences },
+        _id: { $ne: req.user.id }, // Exclude current user
+    });
+    res.json(matches);
+});
